@@ -16,17 +16,18 @@ const UserSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        default: "email@gmail.com"
+        default: "email@gmail.com",
+        unique: true
     },
     password: {
         type: String,
         required: true,
         default: "brak"
     },
-    img: {
-        type: String,
-        require: true,
-        default: "https://i.pinimg.com/564x/ec/e2/b0/ece2b0f541d47e4078aef33ffd22777e.jpg"
+    isLogged: {
+        type: Boolean,
+        required: true,
+        default: false
     },
     date: {
         type: Date,
@@ -37,9 +38,12 @@ const UserSchema = mongoose.Schema({
         require: true,
         default: "Płeć"
     },
-})
+    
+}
+)
 
 // linijka odpowiedzialna za eksport modelu nadajemy mu nazwę  Posts
 // oraz nazwę schematu na podstawie jakiego jest tworzony
 
 module.exports = mongoose.model('Users', UserSchema);
+

@@ -3,11 +3,12 @@ const mongoose = require('mongoose');
 // tworzymy schemat w bazie danych
 
 const ProductSchema = mongoose.Schema({
-    title: {
+    product_name : {
         type: String,
         required: true,
         default: "Przedmiot"
     },
+    
     category: {
         type: String,
         required: true,
@@ -17,11 +18,6 @@ const ProductSchema = mongoose.Schema({
         type: String,
         required: true,
         default: "Opis"
-    },
-    price:{
-        type: Number,
-        required: true,
-        default: 0
     },
     matter:{
         type: String,
@@ -61,6 +57,25 @@ const ProductSchema = mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    net_price: {
+        type: Number,
+        default: 0.0
+    },
+    gross_price: {
+        type: Number,
+        required: true,
+        default: 0.0
+    },
+    weight: {
+        type: Number,
+        required: true,
+        default: 0.0
+    },
+    vat: {
+        type: Number,
+        required: true,
+        default: 0.23
     }
 })
 

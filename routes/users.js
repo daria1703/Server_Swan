@@ -19,13 +19,19 @@ router.get('/', async (req, res) =>{
 // uzywamy post bo chcemy coś wrzucić do bazy danych
 
 router.post('/', async (req, res)=>{
+    const {name, lastName, email, password} = req.body
+
+    User.findOne({email: email}, (err, user) =>{
+        
+    })
+
     const user = new User({
         name: req.body.name,
         lastName: req.body.lastName,
         email: req.body.email,
         password: req.body.password,
-        img: req.body.img,
         sex: req.body.sex,
+        isLogged: req.body.isLogged
     });
 
 // zapisywanie w bazie danych
@@ -37,7 +43,7 @@ router.post('/', async (req, res)=>{
     }
 });
 
-//Zwraca jeden, konkretny post
+// Zwraca jeden, konkretny post
 
 router.get('/:userId', async (req, res)=>{
     try{
@@ -48,7 +54,7 @@ router.get('/:userId', async (req, res)=>{
     }
 });
 
-//Usuwanie
+// Usuwanie
 
 router.delete('/:userId', async (req,res)=>{
     try{
@@ -59,7 +65,7 @@ router.delete('/:userId', async (req,res)=>{
     }
 });
 
-//Aktualizacja
+// Aktualizacja
 
 router.patch('/:userId',async (req,res)=>{
     try{
@@ -71,12 +77,44 @@ router.patch('/:userId',async (req,res)=>{
                     password: req.body.password,
                     sex: req.body.sex,
                     img: req.body.img,
+                    isLogged: req.body.isLogged
             }},
         );
-        res.json(updateedProduct);
+        res.json(updateedUser);
     } catch(err){
         res.json({message: err});
     }
 })
 
+
+
 module.exports = router;
+
+
+//Login
+
+// router.post(
+//     "/login",
+//     asyncHandler(async (req,res)=>{
+//         const {email, password} = req.body;
+//         const user = await User.findOne({email});
+
+//         if (user && (await user.marchPassword(password))){
+//             res.json({
+//                 _id: user._id,
+//                 name: user.name,
+//                 lastName: user.lastName,
+//                 email: user.email,
+//                 token: null,
+//                 createdAt: user.createdAt
+//             });
+//         } else {
+//             res.status(401)
+//             throw new Error("Invalid Email or Password")
+//         }
+
+//     })
+// )
+
+
+// export default router;

@@ -18,7 +18,7 @@ router.get('/', async (req, res) =>{
 
 router.post('/', async (req, res)=>{
     const product = new Product({
-        title: req.body.title,
+        // title: req.body.title,
         description: req.body.description,
         price: req.body.price,
         matter: req.body.matter,
@@ -26,6 +26,10 @@ router.post('/', async (req, res)=>{
         size: req.body.size,
         brand: req.body.brand,
         category: req.body.category,
+        product_name: req.body.product_name,
+        net_price: req.body.net_price,
+        gross_price: req.body.gross_price,
+        weight: req.body.weight
         // img: req.body.img
     });
 
@@ -76,6 +80,10 @@ router.patch('/:productId',async (req,res)=>{
                     img: req.body.img,
                     quantity: req.body.quantity,
                     category: req.body.category,
+                    product_name: req.body.product_name,
+                    net_price: req.body.net_price,
+                    gross_price: req.body.gross_price,
+                    weight: req.body.weight
             }},            
         );
         res.json(updateedProduct);
