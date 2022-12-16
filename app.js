@@ -10,6 +10,7 @@ let port = process.env.PORT || 3000;
 // ta linijka upewiamy się że poszczególne częsci kodu działają
 app.use(cors());
 app.use(bodyParser.json())
+app.set("view engine", "ejs")
 
 //Import Routes
 const productsRoute = require('./routes/products');
@@ -30,6 +31,7 @@ app.use('/wish_lists', wishListRoute);
 app.use('/comments', commentsRoute);
 app.use('/addresses', addressesRoute);
 app.use('/categories', categoriesRoute);
+app.use('/users/register', usersRoute)
 
 //Middlewares miejsce gdzie mozemy wstawić logikę gdy uzyskamy połacznie z wybraną przez nas częścia routingu, może to być np jakaś funkcja
 // np robi sie tu autoryzację użytkownika

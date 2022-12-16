@@ -38,6 +38,12 @@ const UserSchema = mongoose.Schema({
         require: true,
         default: "Płeć"
     },
+
+    reEnteredPassword: {
+        type: String,
+        require: true,
+        default: "brak"
+    }
     
 }
 )
