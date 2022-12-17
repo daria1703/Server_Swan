@@ -10,7 +10,7 @@ const ProductSchema = mongoose.Schema({
     },
     
     category: {
-        type: String,
+        type: Array,
         required: true,
         default: "Przedmiot"
     },
