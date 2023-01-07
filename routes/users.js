@@ -1,6 +1,4 @@
 const express = require('express');
-const { execMap } = require('nodemon/lib/config/defaults');
-const { regexpToText } = require('nodemon/lib/utils');
 const User = require('../models/User');
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -60,7 +58,7 @@ router.post('/login', async (req, res) => {
         return res.json({ error: "User not registered" });
     }
     if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({ email: user.email }, JWT_SECRET);
+        const token = jwt.sign({ email: user.email }, JWT_SECRET, {expiresIn: 10});
         if (res.status(201)) {
             return res.json({ status: "ok", data: token });
         } else {
@@ -73,7 +71,16 @@ router.post('/login', async (req, res) => {
 router.post('/userData', async (req, res) => {
     const { token } = req.body;
     try {
-        const user = jwt.verify(token, JWT_SECRET);
+        const user = jwt.verify(token, JWT_SECRET,(err, res)=>{
+            if(err){
+                return "Token expired"
+            }
+            return res;
+        });
+        console.log(user);
+        if(user == "Token expired"){
+            return res.send({status: "error", data: "Token expired"});
+        }
         const userEmail = user.email;
         User.findOne({ email: userEmail })
             .then((data) => {
@@ -129,50 +136,50 @@ router.post('/userData', async (req, res) => {
 
 // Zwraca jeden, konkretny post
 
-router.get('/:userId', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.userId)
-        res.json(user)
-    } catch (err) {
-        res.json({ message: err });
-    }
-});
+// router.get('/:userId', async (req, res) => {
+//     try {
+//         const user = await User.findById(req.params.userId)
+//         res.json(user)
+//     } catch (err) {
+//         res.json({ message: err });
+//     }
+// });
 
 // Usuwanie
 
-router.delete('/:userId', async (req, res) => {
-    try {
-        const removeUser = await User.remove({ _id: req.params.userId });
-        res.json(removeUser);
-    } catch (err) {
-        res.json({ message: err });
-    }
-});
+// router.delete('/:userId', async (req, res) => {
+//     try {
+//         const removeUser = await User.remove({ _id: req.params.userId });
+//         res.json(removeUser);
+//     } catch (err) {
+//         res.json({ message: err });
+//     }
+// });
 
 // Aktualizacja
 
-router.patch('/:userId', async (req, res) => {
-    try {
-        const updateedUser = await User.updateMany(
-            { _id: req.params.userId },
-            {
-                $set: {
-                    name: req.body.name,
-                    lastName: req.body.lastName,
-                    email: req.body.email,
-                    password: req.body.password,
-                    sex: req.body.sex,
-                    img: req.body.img,
-                    isLogged: req.body.isLogged,
-                    reEnteredPassword: req.body.reEnteredPassword
-                }
-            },
-        );
-        res.json(updateedUser);
-    } catch (err) {
-        res.json({ message: err });
-    }
-})
+// router.patch('/:userId', async (req, res) => {
+//     try {
+//         const updateedUser = await User.updateMany(
+//             { _id: req.params.userId },
+//             {
+//                 $set: {
+//                     name: req.body.name,
+//                     lastName: req.body.lastName,
+//                     email: req.body.email,
+//                     password: req.body.password,
+//                     sex: req.body.sex,
+//                     img: req.body.img,
+//                     isLogged: req.body.isLogged,
+//                     reEnteredPassword: req.body.reEnteredPassword
+//                 }
+//             },
+//         );
+//         res.json(updateedUser);
+//     } catch (err) {
+//         res.json({ message: err });
+//     }
+// })
 
 router.post("/forgetPassword", async (req, res) => {
     const { email } = req.body;

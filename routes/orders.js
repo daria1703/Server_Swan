@@ -1,6 +1,4 @@
 const express = require('express');
-const { execMap } = require('nodemon/lib/config/defaults');
-const { regexpToText } = require('nodemon/lib/utils');
 const router = express.Router();
 // importowanie schematów
 const Order = require('../models/Order');
@@ -18,12 +16,7 @@ router.get('/', async (req, res) =>{
 // uzywamy post bo chcemy coś wrzucić do bazy danych
 
 router.post('/', async (req, res)=>{
-    const order = new Order({
-        date_of_order: req.body.date_of_order,
-        isAccepted: req.body.isAccepted,
-        isCompleted: req.body.isCompleted,
-        isVoucher: req.body.isVoucher
-    });
+    const order = new Order(req.body);
 
 // zapisywanie w bazie danych
     try{
@@ -36,10 +29,10 @@ router.post('/', async (req, res)=>{
 
 //Zwraca jeden, konkretny post
 
-router.get('/:orderId', async (req, res)=>{
+router.get('/:find/userId', async (req, res)=>{
     try{
-    const order = await Order.findById(req.params.orderId)
-    res.json(order)
+    const orders = await Order.find({userId: req.params.userId});
+    res.json(orders)
     } catch(err){
         res.json({message: err});
     }
