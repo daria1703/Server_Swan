@@ -19,7 +19,7 @@ router.get('/', async (req, res) =>{
 
 router.post('/', async (req, res)=>{
     const category = new Category({
-        categoryName: req.body.categoryNamey,
+        categoryName: req.body.categoryName,
         subcategoryName: req.body.subcategoryName
     });
 
