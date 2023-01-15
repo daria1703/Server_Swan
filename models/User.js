@@ -45,7 +45,8 @@ const UserSchema = mongoose.Schema({
         default: "brak"
     }
     
-}
+},
+    { timestamps: true }
 )
 
 // linijka odpowiedzialna za eksport modelu nadajemy mu nazwę  Posts

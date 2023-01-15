@@ -12,6 +12,7 @@ app.use(cors());
 app.use(bodyParser.json())
 app.set("view engine", "ejs")
 
+
 //Import Routes
 const productsRoute = require('./routes/products');
 const usersRoute = require('./routes/users');
@@ -21,6 +22,8 @@ const wishListRoute = require('./routes/wish_lists');
 const commentsRoute = require('./routes/comments');
 const addressesRoute = require('./routes/addresses');
 const categoriesRoute = require('./routes/categories');
+const paymentRoute = require('./routes/payment');
+const cartsRoute = require('./routes/carts');
 
 
 app.use('/products', productsRoute);
@@ -31,7 +34,11 @@ app.use('/wish_lists', wishListRoute);
 app.use('/comments', commentsRoute);
 app.use('/addresses', addressesRoute);
 app.use('/categories', categoriesRoute);
-app.use('/users/register', usersRoute)
+app.use('/users/register', usersRoute);
+app.use('/payment/payment', paymentRoute)
+app.use('/carts', cartsRoute)
+
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 //Middlewares miejsce gdzie mozemy wstawić logikę gdy uzyskamy połacznie z wybraną przez nas częścia routingu, może to być np jakaś funkcja
 // np robi sie tu autoryzację użytkownika
@@ -81,7 +88,12 @@ app.get('/categories', (req, res)=>{
     res.send('We are on categories');
 });
 
-
+// app.get("/", (req, res) =>{
+//     res.send({
+//         publishKey: process.env.STRIPE_PUBLIC_KEY
+//     })
+// })
+// app.post("create-payment-intent", async (req,res) => {});
 
 // Połącznie z bazą DB
 
@@ -94,3 +106,5 @@ mongoose.connect(
 app.listen(port, () => {
   console.log(`App is running on port http://localhost:${port}`);
 });
+
+module.exports = app

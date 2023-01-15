@@ -5,20 +5,20 @@ const router = express.Router();
 const Product = require('../models/Product');
 
 // zwraca wszystkie posty
-router.get('/', async (req, res) =>{
-    try{
-        const products = await Product.find();
-        res.json(products);
-    }catch(err){
-       res.json({message: err}); 
-    }
-});
+// router.get('/', async (req, res) =>{
+//     try{
+//         const products = await Product.find();
+//         res.json(products);
+//     }catch(err){
+//        res.json({message: err}); 
+//     }
+// });
 
 // uzywamy post bo chcemy coś wrzucić do bazy danych
 
 router.post('/', async (req, res)=>{
     const product = new Product({
-        // title: req.body.title,
+        product_name: req.body.product_name,
         description: req.body.description,
         price: req.body.price,
         matter: req.body.matter,
@@ -29,8 +29,10 @@ router.post('/', async (req, res)=>{
         product_name: req.body.product_name,
         net_price: req.body.net_price,
         gross_price: req.body.gross_price,
-        weight: req.body.weight
-        // img: req.body.img
+        weight: req.body.weight,
+        img: req.body.img,
+        vat: req.body.vat,
+        short_description: req.body.short_description
     });
 
 // zapisywanie w bazie danych
@@ -42,11 +44,12 @@ router.post('/', async (req, res)=>{
     }
 });
 
-//Zwraca jeden, konkretny post
+//Pobiernie jednego produktu
 
 router.get('/:productId', async (req, res)=>{
     try{
     const product = await Product.findById(req.params.productId)
+    
     res.json(product)
     } catch(err){
         res.json({message: err});
@@ -83,7 +86,8 @@ router.patch('/:productId',async (req,res)=>{
                     product_name: req.body.product_name,
                     net_price: req.body.net_price,
                     gross_price: req.body.gross_price,
-                    weight: req.body.weight
+                    weight: req.body.weight,
+                    short_description: req.body.short_description
             }},            
         );
         res.json(updateedProduct);
@@ -91,5 +95,34 @@ router.patch('/:productId',async (req,res)=>{
         res.json({message: err});
     }
 })
+
+// Pobiernie nowych produktów i produktów według kategorii 
+
+router.get('/', async (req, res)=>{
+    
+    const new_product = req.query.new;
+    const product_by_category = req.query.category;
+
+    try{
+        let products;
+
+        if(new_product){
+            products = await Product.find().sort({createdAt: -1}).limit(5);
+        } else if(product_by_category){
+            products = await Product.find({
+                category:{
+                $in: [product_by_category],
+            },
+        })
+        }else{
+            products = await Product.find();
+        }
+    
+    res.json(products)
+    } catch(err){
+        res.json({message: err});
+    }
+});
+
 
 module.exports = router;

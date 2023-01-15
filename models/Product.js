@@ -19,18 +19,23 @@ const ProductSchema = mongoose.Schema({
         required: true,
         default: "Opis"
     },
+    short_description: {
+        type: String,
+        required: true,
+        default: "Short description"
+    },
     matter:{
         type: String,
         required: true,
         default: "Materiał"
     },
     assay:{
-        type: Number,
+        type: Array,
         require: true,
         default: 0
     },
     size:{
-        type: Number,
+        type: Array,
         require: true,
         default: 0
     },
@@ -39,11 +44,11 @@ const ProductSchema = mongoose.Schema({
         require: true,
         default: "Marka"
     },
-    sex:{
-        type: String,
-        require: true,
-        default: "Płeć"
-    },
+    // sex:{
+    //     type: String,
+    //     require: true,
+    //     default: "Płeć"
+    // },
     img:{
         type: String,
         required: true,
@@ -53,10 +58,6 @@ const ProductSchema = mongoose.Schema({
         type: Number,
         require: true,
         default: 0
-    },
-    date: {
-        type: Date,
-        default: Date.now
     },
     net_price: {
         type: Number,
@@ -77,7 +78,9 @@ const ProductSchema = mongoose.Schema({
         required: true,
         default: 0.23
     }
-})
+},
+{ timestamps: true }
+)
 
 // linijka odpowiedzialna za eksport modelu nadajemy mu nazwę  Posts
 // oraz nazwę schematu na podstawie jakiego jest tworzony
