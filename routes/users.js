@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
         return res.json({ error: "User not registered" });
     }
     if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({ email: user.email }, JWT_SECRET, {expiresIn: 10});
+        const token = jwt.sign({ email: user.email }, JWT_SECRET, {expiresIn: 3000});
         if (res.status(201)) {
             return res.json({ status: "ok", data: token });
         } else {

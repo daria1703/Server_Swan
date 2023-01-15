@@ -106,3 +106,5 @@ mongoose.connect(
 app.listen(port, () => {
   console.log(`App is running on port http://localhost:${port}`);
 });
+
+module.exports = app
