@@ -43,7 +43,11 @@ const UserSchema = mongoose.Schema({
         type: String,
         require: true,
         default: "brak"
-    }
+    },
+    isAdmin:{
+        type:Boolean,
+        default: false
+    },
     
 },
     { timestamps: true }

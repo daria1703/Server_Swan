@@ -1,70 +1,99 @@
-const express = require('express');
-const router = express.Router();
-// importowanie schematów
-const Order = require('../models/Order');
+const Order = require("../models/Order");
+const {
+  verifyToken,
+  verifyTokenAndAuthorization,
+  verifyTokenAndAdmin,
+} = require("./verifyToken");
 
-// zwraca wszystkie posty
-router.get('/', async (req, res) =>{
-    try{
-        const orders = await Order.find();
-        res.json(orders);
-    }catch(err){
-       res.json({message: err});
-    }
+const router = require("express").Router();
+
+//CREATE
+
+router.post("/", verifyToken, async (req, res) => {
+  const newOrder = new Order(req.body);
+
+  try {
+    const savedOrder = await newOrder.save();
+    res.status(200).json(savedOrder);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-// uzywamy post bo chcemy coś wrzucić do bazy danych
-
-router.post('/', async (req, res)=>{
-    const order = new Order(req.body);
-
-// zapisywanie w bazie danych
-    try{
-    const saveedOrder = await order.save();
-    res.json(saveedOrder);
-    } catch (err){
-        res.json({message: err});
-    }
+//UPDATE
+router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedOrder);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-//Zwraca jeden, konkretny post
-
-router.get('/:find/userId', async (req, res)=>{
-    try{
-    const orders = await Order.find({userId: req.params.userId});
-    res.json(orders)
-    } catch(err){
-        res.json({message: err});
-    }
+//DELETE
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    await Order.findByIdAndDelete(req.params.id);
+    res.status(200).json("Order has been deleted...");
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-//Usuwanie
-
-router.delete('/:orderId', async (req,res)=>{
-    try{
-    const removeOrder =  await Order.remove({_id: req.params.orderId});
-    res.json(removeOrder);
-    } catch(err){
-        res.json({message: err});
-    }
+//GET USER ORDERS
+router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.params.userId });
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-//Aktualizacja
+// //GET ALL
 
-router.patch('/:orderId',async (req,res)=>{
-    try{
-        const updateedOrder = await Order.updateMany(
-            {_id: req.params.orderId},
-            {$set: {date_of_order: req.body.date_of_order,
-                isAccepted: req.body.isAccepted,
-                isCompleted: req.body.isCompleted,
-                isVoucher: req.body.isVoucher
-            }},
-        );
-        res.json(updateedOrder);
-    } catch(err){
-        res.json({message: err});
-    }
-})
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET MONTHLY INCOME
+
+router.get("/income", verifyTokenAndAdmin, async (req, res) => {
+  const date = new Date();
+  const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
+  const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+
+  try {
+    const income = await Order.aggregate([
+      { $match: { createdAt: { $gte: previousMonth } } },
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+          sales: "$amount",
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: "$sales" },
+        },
+      },
+    ]);
+    res.status(200).json(income);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;

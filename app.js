@@ -22,8 +22,9 @@ const wishListRoute = require('./routes/wish_lists');
 const commentsRoute = require('./routes/comments');
 const addressesRoute = require('./routes/addresses');
 const categoriesRoute = require('./routes/categories');
-const paymentRoute = require('./routes/payment');
+const stripeRoute = require('./routes/stripe');
 const cartsRoute = require('./routes/carts');
+const authRoute = require('./routes/auth');
 
 
 app.use('/products', productsRoute);
@@ -34,9 +35,11 @@ app.use('/wish_lists', wishListRoute);
 app.use('/comments', commentsRoute);
 app.use('/addresses', addressesRoute);
 app.use('/categories', categoriesRoute);
-app.use('/users/register', usersRoute);
-app.use('/payment/payment', paymentRoute)
-app.use('/carts', cartsRoute)
+app.use('/auth/register', usersRoute);
+app.use('/auth/login', usersRoute);
+app.use('/carts', cartsRoute);
+app.use('/checkout', stripeRoute);
+app.use('/auth', authRoute);
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 

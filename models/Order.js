@@ -14,7 +14,7 @@ const OrderSchema = mongoose.Schema({
         default: 0.0
     },
     address: {
-        type: String, 
+        type: Object, 
         required: true,
         default: "Address"
     },

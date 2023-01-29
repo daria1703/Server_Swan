@@ -3,6 +3,7 @@ const { execMap } = require('nodemon/lib/config/defaults');
 const router = express.Router();
 // importowanie schematów
 const Product = require('../models/Product');
+const { verifyTokenAndAdmin } = require('./verifyToken');
 
 // zwraca wszystkie posty
 // router.get('/', async (req, res) =>{
@@ -16,7 +17,7 @@ const Product = require('../models/Product');
 
 // uzywamy post bo chcemy coś wrzucić do bazy danych
 
-router.post('/', async (req, res)=>{
+router.post('/', verifyTokenAndAdmin, async (req, res)=>{
     const product = new Product({
         product_name: req.body.product_name,
         description: req.body.description,
@@ -56,9 +57,10 @@ router.get('/:productId', async (req, res)=>{
     }
 });
 
+
 //Usuwanie
 
-router.delete('/:productId', async (req,res)=>{
+router.delete('/:productId', verifyTokenAndAdmin, async (req,res)=>{
     try{
     const removeProduct =  await Product.remove({_id: req.params.productId});
     res.json(removeProduct);    
@@ -69,7 +71,7 @@ router.delete('/:productId', async (req,res)=>{
 
 //Aktualizacja
 
-router.patch('/:productId',async (req,res)=>{
+router.patch('/:productId', verifyTokenAndAdmin, async (req,res)=>{
     try{
         const updateedProduct = await Product.updateMany(
             {_id: req.params.productId},
