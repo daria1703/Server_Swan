@@ -1,9 +1,14 @@
 const express = require('express');
+const app = express();
 const { execMap } = require('nodemon/lib/config/defaults');
 const router = express.Router();
+const cors = require('cors');
 // importowanie schematów
 const Product = require('../models/Product');
 const { verifyTokenAndAdmin } = require('./verifyToken');
+// app.use(cors({
+//     origin: 'http://localhost:3001/'
+//   }));
 
 // zwraca wszystkie posty
 // router.get('/', async (req, res) =>{
@@ -71,7 +76,7 @@ router.delete('/:productId', verifyTokenAndAdmin, async (req,res)=>{
 
 //Aktualizacja
 
-router.patch('/:productId', verifyTokenAndAdmin, async (req,res)=>{
+router.put('/:productId', verifyTokenAndAdmin, async (req,res)=>{
     try{
         const updateedProduct = await Product.updateMany(
             {_id: req.params.productId},

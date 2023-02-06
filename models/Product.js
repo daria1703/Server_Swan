@@ -57,7 +57,7 @@ const ProductSchema = mongoose.Schema({
     quantity:{
         type: Number,
         require: true,
-        default: 0
+        default: 0.0
     },
     net_price: {
         type: Number,

@@ -66,4 +66,30 @@ router.post('/login', async (req, res) => {
 
 });
 
+
+router.post('/userData', async (req, res) => {
+  const { accessToken } = req.body.accessToken;
+  try {
+      const user = jwt.verify(accessToken, JWT_SEC,(err, res)=>{
+          if(err){
+              isLogged == false
+              return "Token expired"
+          }
+          return res;
+      });
+      console.log(user);
+      if(user == "Token expired"){
+          return res.send({status: "error", data: "Token expired"});
+      }
+      const userEmail = user.email;
+      User.findOne({ email: userEmail })
+          .then((data) => {
+              res.send({ status: "Ok", data: data });
+          })
+          .catch((error) => {
+              res.send({ status: "error", data: error });
+          });
+  } catch (error) { }
+})
+
 module.exports = router;

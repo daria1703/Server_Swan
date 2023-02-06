@@ -59,12 +59,28 @@ router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
 // //GET ALL
 
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
-  try {
-    const orders = await Order.find();
-    res.status(200).json(orders);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  const new_orders = req.query.new;
+  // try {
+  //   const orders = await Order.find();
+  //   res.status(200).json(orders);
+  // } catch (err) {
+  //   res.status(500).json(err);
+  // }
+
+  try{
+    let orders;
+
+    if(new_orders){
+        orders = await Order.find().sort({createdAt: -1}).limit(5);
+    } else{
+        orders = await Order.find();
+    }
+
+res.json(orders)
+} catch(err){
+    res.json({message: err});
+}
+
 });
 
 // GET MONTHLY INCOME
