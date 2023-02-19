@@ -1,23 +1,41 @@
 const mongoose = require('mongoose');
 
-// tworzymy schemat w bazie danych
+const ReviewSchema = mongoose.Schema({
+    name: {
+        type: String,
+        require: true,
+    },
+    rating: {
+        type: Number,
+        require: true
+    },
+    comment:{
+        type: String,
+        require: true
+    },
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+        ref:"Users",
+    } 
+})
 
 const ProductSchema = mongoose.Schema({
     product_name : {
         type: String,
         required: true,
-        default: "Przedmiot"
+        default: "Item"
     },
     
     category: {
         type: Array,
         required: true,
-        default: "Przedmiot"
+        default: "Category"
     },
     description: {
         type: String,
         required: true,
-        default: "Opis"
+        default: "Description"
     },
     short_description: {
         type: String,
@@ -27,7 +45,18 @@ const ProductSchema = mongoose.Schema({
     matter:{
         type: String,
         required: true,
-        default: "Materiał"
+        default: "Material"
+    },
+    reviews: [ReviewSchema],
+    rating:{
+        type: Number,
+        require: true,
+        default: 0,
+    },
+    numReviews:{
+        type:Number,
+        require: true,
+        default:0,
     },
     assay:{
         type: Array,
@@ -42,13 +71,8 @@ const ProductSchema = mongoose.Schema({
     brand:{
         type: String,
         require: true,
-        default: "Marka"
+        default: "Brand"
     },
-    // sex:{
-    //     type: String,
-    //     require: true,
-    //     default: "Płeć"
-    // },
     img:{
         type: String,
         required: true,
@@ -81,8 +105,5 @@ const ProductSchema = mongoose.Schema({
 },
 { timestamps: true }
 )
-
-// linijka odpowiedzialna za eksport modelu nadajemy mu nazwę  Posts
-// oraz nazwę schematu na podstawie jakiego jest tworzony
 
 module.exports = mongoose.model('Products', ProductSchema);

@@ -34,9 +34,9 @@ describe("POST /products", () => {
     });
 });
 
-describe("PATCH /products/:productId", () => {
+describe("PUT /products/:productId", () => {
     it("should return code 200", async () => {
-        const res = await request(app).patch(
+        const res = await request(app).put(
             "/products/626308aa10824eeeb6ba36b3"
         );
         expect(res.statusCode).toBe(200);

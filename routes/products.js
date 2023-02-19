@@ -1,28 +1,11 @@
 const express = require('express');
 const app = express();
-const { execMap } = require('nodemon/lib/config/defaults');
 const router = express.Router();
 const cors = require('cors');
-// importowanie schematów
 const Product = require('../models/Product');
 const { verifyTokenAndAdmin } = require('./verifyToken');
-// app.use(cors({
-//     origin: 'http://localhost:3001/'
-//   }));
 
-// zwraca wszystkie posty
-// router.get('/', async (req, res) =>{
-//     try{
-//         const products = await Product.find();
-//         res.json(products);
-//     }catch(err){
-//        res.json({message: err}); 
-//     }
-// });
-
-// uzywamy post bo chcemy coś wrzucić do bazy danych
-
-router.post('/', verifyTokenAndAdmin, async (req, res)=>{
+router.post('/', async (req, res)=>{
     const product = new Product({
         product_name: req.body.product_name,
         description: req.body.description,
@@ -32,13 +15,14 @@ router.post('/', verifyTokenAndAdmin, async (req, res)=>{
         size: req.body.size,
         brand: req.body.brand,
         category: req.body.category,
+        quantity: req.body.quantity,
         product_name: req.body.product_name,
         net_price: req.body.net_price,
         gross_price: req.body.gross_price,
         weight: req.body.weight,
         img: req.body.img,
         vat: req.body.vat,
-        short_description: req.body.short_description
+        short_description: req.body.short_description,
     });
 
 // zapisywanie w bazie danych
@@ -65,7 +49,7 @@ router.get('/:productId', async (req, res)=>{
 
 //Usuwanie
 
-router.delete('/:productId', verifyTokenAndAdmin, async (req,res)=>{
+router.delete('/:productId', async (req,res)=>{
     try{
     const removeProduct =  await Product.remove({_id: req.params.productId});
     res.json(removeProduct);    
@@ -76,7 +60,7 @@ router.delete('/:productId', verifyTokenAndAdmin, async (req,res)=>{
 
 //Aktualizacja
 
-router.put('/:productId', verifyTokenAndAdmin, async (req,res)=>{
+router.put('/:productId', async (req,res)=>{
     try{
         const updateedProduct = await Product.updateMany(
             {_id: req.params.productId},
@@ -94,7 +78,10 @@ router.put('/:productId', verifyTokenAndAdmin, async (req,res)=>{
                     net_price: req.body.net_price,
                     gross_price: req.body.gross_price,
                     weight: req.body.weight,
-                    short_description: req.body.short_description
+                    short_description: req.body.short_description,
+                    rating: req.body.rating,
+                    numReviews: req.body.numReviews,
+                    reviews: req.body.reviews
             }},            
         );
         res.json(updateedProduct);

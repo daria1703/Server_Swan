@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// tworzymy schemat w bazie danych
 
 const UserSchema = mongoose.Schema({
     name: {
@@ -52,9 +51,6 @@ const UserSchema = mongoose.Schema({
 },
     { timestamps: true }
 )
-
-// linijka odpowiedzialna za eksport modelu nadajemy mu nazwę  Posts
-// oraz nazwę schematu na podstawie jakiego jest tworzony
 
 module.exports = mongoose.model('Users', UserSchema);
 

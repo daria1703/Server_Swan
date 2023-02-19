@@ -1,44 +1,97 @@
 const mongoose = require('mongoose');
 
-// tworzymy schemat w bazie danych
-
 const OrderSchema = mongoose.Schema({
-    userId: {
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+        ref:"Users",
+    }, 
+    orderItems: [
+        {
+            name: {
+                type:String,
+                require: true,
+            },
+            qty:{
+                type:Number,
+                require: true,
+            },
+            image:{
+                type:String,
+                require: true,
+            },
+            price:{
+                type:Number,
+                require: true,
+            },
+            product:{
+                type: mongoose.Schema.Types.ObjectId,
+                require: true,
+                ref:"Products",
+            },
+        }
+    ],
+    shippingAdrdress:{
+        address:{
+            type:String,
+            require: true,
+        },
+        city:{
+            type:String,
+            require: true,
+        },
+        postaCode:{
+            type:String,
+            require: true,
+        },
+        country:{
+            type:String,
+            require: true,
+        },
+    },
+    paymentMethod:{
         type: String,
         require: true,
-        default: "UserID"
+        default:"Paypal",
     },
-    amount: {
-        type: Number,
-        required: true,
-        default: 0.0
-    },
-    address: {
-        type: Object, 
-        required: true,
-        default: "Address"
-    },
-    status:{
-        type: String,
-        default: "pending",
-    },
-    products: [
-        {
-            productId: {
-                type: String,
-                default: "ProductId"
-            },
-            quantity: {
-                type: Number,
-                default: 1,
-            },
+    paymentResult:{
+        id:{
+            type: String
         },
-    ]
+        status:{
+            type:String
+        },
+        update_time:{
+            type:String
+        },
+        email_address:{
+            type:String
+        },
+    },
+    taxPrice:{
+        type: Number,
+        require: true,
+        default:0.0,
+    },
+    isPaid:{
+        type: Boolean,
+        require: true,
+        default:false,
+    },
+    paidAt:{
+        type:Date
+    },
+    isDelivered:{
+        type: Boolean,
+        require: true,
+        default:false,
+    },
+    deliveredAt:{
+        type: Date,
+    },
 },
     { timestamps: true }
 )
 
-// linijka odpowiedzialna za eksport modelu nadajemy mu nazwę  Posts
-// oraz nazwę schematu na podstawie jakiego jest tworzony
-
 module.exports = mongoose.model('Orders', OrderSchema);
+

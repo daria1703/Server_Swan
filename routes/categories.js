@@ -1,11 +1,7 @@
 const express = require('express');
-const { execMap } = require('nodemon/lib/config/defaults');
-const { regexpToText } = require('nodemon/lib/utils');
 const router = express.Router();
-// importowanie schematów
 const Category = require('../models/Category');
 
-// zwraca wszystkie posty
 router.get('/', async (req, res) =>{
     try{
         const categories = await Category.find();
@@ -15,15 +11,12 @@ router.get('/', async (req, res) =>{
     }
 });
 
-// uzywamy post bo chcemy coś wrzucić do bazy danych
-
 router.post('/', async (req, res)=>{
     const category = new Category({
         categoryName: req.body.categoryName,
         subcategoryName: req.body.subcategoryName
     });
 
-// zapisywanie w bazie danych
     try{
     const saveedCategory = await category.save();
     res.json(saveedCategory);
@@ -32,7 +25,6 @@ router.post('/', async (req, res)=>{
     }
 });
 
-//Zwraca jeden, konkretny post
 
 router.get('/:categoryId', async (req, res)=>{
     try{
@@ -43,8 +35,6 @@ router.get('/:categoryId', async (req, res)=>{
     }
 });
 
-//Usuwanie
-
 router.delete('/:categoryId', async (req,res)=>{
     try{
     const removeCategory =  await Category.remove({_id: req.params.categoryId});
@@ -54,7 +44,6 @@ router.delete('/:categoryId', async (req,res)=>{
     }
 });
 
-//Aktualizacja
 
 router.patch('/:categoryId',async (req,res)=>{
     try{

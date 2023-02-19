@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// tworzymy schemat w bazie danych
 
 const VoucherSchema = mongoose.Schema({
     discount: {
@@ -20,8 +19,5 @@ const VoucherSchema = mongoose.Schema({
     }
 
 })
-
-// linijka odpowiedzialna za eksport modelu nadajemy mu nazwę  Posts
-// oraz nazwę schematu na podstawie jakiego jest tworzony
 
 module.exports = mongoose.model('Vouchers', VoucherSchema);

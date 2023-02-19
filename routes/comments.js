@@ -1,12 +1,8 @@
 const express = require('express');
-const { execMap } = require('nodemon/lib/config/defaults');
-const { regexpToText } = require('nodemon/lib/utils');
 const User = require('../models/User');
 const router = express.Router();
-// importowanie schematów
 const Comment = require('../models/Comment');
 
-// zwraca wszystkie posty
 router.get('/', async (req, res) =>{
     try{
         const comments = await Comment.find();
@@ -16,14 +12,12 @@ router.get('/', async (req, res) =>{
     }
 });
 
-// uzywamy post bo chcemy coś wrzucić do bazy danych
 
 router.post('/', async (req, res)=>{
     const comment = new Comment({
         comment_content: req.body.comment_content
     });
 
-// zapisywanie w bazie danych
     try{
     const saveedComment = await comment.save();
     res.json(saveedComment);
@@ -32,7 +26,6 @@ router.post('/', async (req, res)=>{
     }
 });
 
-//Zwraca jeden, konkretny post
 
 router.get('/:commentId', async (req, res)=>{
     try{
@@ -43,7 +36,6 @@ router.get('/:commentId', async (req, res)=>{
     }
 });
 
-//Usuwanie
 
 router.delete('/:commentId', async (req,res)=>{
     try{
@@ -54,7 +46,6 @@ router.delete('/:commentId', async (req,res)=>{
     }
 });
 
-//Aktualizacja
 
 router.patch('/:commentId',async (req,res)=>{
     try{

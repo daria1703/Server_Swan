@@ -1,12 +1,8 @@
 const express = require('express');
-const { execMap } = require('nodemon/lib/config/defaults');
-const { regexpToText } = require('nodemon/lib/utils');
-const User = require('../models/User');
 const router = express.Router();
-// importowanie schematów
+
 const Address = require('../models/Address');
 
-// zwraca wszystkie posty
 router.get('/', async (req, res) =>{
     try{
         const addresses = await Address.find();
@@ -16,7 +12,6 @@ router.get('/', async (req, res) =>{
     }
 });
 
-// uzywamy post bo chcemy coś wrzucić do bazy danych
 
 router.post('/', async (req, res)=>{
     const address = new Address({
@@ -27,7 +22,6 @@ router.post('/', async (req, res)=>{
         apartment_number: req.body.apartment_number
     });
 
-// zapisywanie w bazie danych
     try{
     const saveedAddress = await address.save();
     res.json(saveedAddress);
@@ -36,7 +30,6 @@ router.post('/', async (req, res)=>{
     }
 });
 
-//Zwraca jeden, konkretny post
 
 router.get('/:addressId', async (req, res)=>{
     try{
@@ -47,8 +40,6 @@ router.get('/:addressId', async (req, res)=>{
     }
 });
 
-//Usuwanie
-
 router.delete('/:addressId', async (req,res)=>{
     try{
     const removeAddress =  await Address.remove({_id: req.params.addressId});
@@ -57,8 +48,6 @@ router.delete('/:addressId', async (req,res)=>{
         res.json({message: err});
     }
 });
-
-//Aktualizacja
 
 router.patch('/:addressId',async (req,res)=>{
     try{

@@ -1,99 +1,3 @@
-// const User = require("../models/User");
-// const {
-//   verifyToken,
-//   verifyTokenAndAuthorization,
-//   verifyTokenAndAdmin,
-// } = require("./verifyToken");
-
-// const router = require("express").Router();
-
-// //UPDATE
-// router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
-//   if (req.body.password) {
-//     req.body.password = CryptoJS.AES.encrypt(
-//       req.body.password,
-//       process.env.PASS_SEC
-//     ).toString();
-//   }
-
-//   try {
-//     const updatedUser = await User.findByIdAndUpdate(
-//       req.params.id,
-//       {
-//         $set: req.body,
-//       },
-//       { new: true }
-//     );
-//     res.status(200).json(updatedUser);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
-
-// //DELETE
-// router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
-//   try {
-//     await User.findByIdAndDelete(req.params.id);
-//     res.status(200).json("User has been deleted...");
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
-
-// //GET USER
-// router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     const { password, ...others } = user._doc;
-//     res.status(200).json(others);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
-
-// //GET ALL USER
-// router.get("/", verifyTokenAndAdmin, async (req, res) => {
-//   const query = req.query.new;
-//   try {
-//     const users = query
-//       ? await User.find().sort({ _id: -1 }).limit(5)
-//       : await User.find();
-//     res.status(200).json(users);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
-
-// //GET USER STATS
-
-// router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
-//   const date = new Date();
-//   const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
-
-//   try {
-//     const data = await User.aggregate([
-//       { $match: { createdAt: { $gte: lastYear } } },
-//       {
-//         $project: {
-//           month: { $month: "$createdAt" },
-//         },
-//       },
-//       {
-//         $group: {
-//           _id: "$month",
-//           total: { $sum: 1 },
-//         },
-//       },
-//     ]);
-//     res.status(200).json(data)
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
-
-// module.exports = router;
-
-
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
@@ -118,9 +22,16 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:userId', async (req, res)=>{
+    try{
+    const user = await Product.findById(req.params.userId)
+    
+    res.json(user)
+    } catch(err){
+        res.json({message: err});
+    }
+});
 
-
-// uzywamy post bo chcemy coś wrzucić do bazy danych
 
 router.post('/register', async (req, res) => {
     const { name, lastName, password, email, reEnteredPassword, sex } = req.body;
@@ -190,59 +101,6 @@ router.post('/userData', async (req, res) => {
     } catch (error) { }
 })
 
-// router.post("/login", async (req, res) => {
-//     const {email, password} = req.body
-//     User.findOne({email: email}, async (err, user) => {
-//         if(user){
-//             if(password === user.password){
-//                 res.send({message: "Login Successfull", user: user})
-//             } else {
-//                 res.send({message: "Password didn't match"})
-//             }
-//         } else {
-//             res.send({message: "User not registered"})
-//         }
-//         if(await bcrypt.compare(password, user.password)){
-//             const token = jwt.sign({}, JWT_SECRET);
-//                 if(res.status(201)){
-//                     return res.json({status: "ok", data: token});
-//                 }else {
-//                     return res.json({status:"error"});
-//                 }
-//         }
-//     })
-// })
-
-// router.post('/', async (req, res)=>{
-//     const user = new User({
-//         name: req.body.name,
-//         lastName: req.body.lastName,
-//         email: req.body.email,
-//         password: req.body.password,
-//         img: req.body.img,
-//         sex: req.body.sex,
-//     });
-
-// // zapisywanie w bazie danych
-//     try{
-//     const saveedUser = await user.save();
-//     res.json(saveedUser);
-//     } catch (err){
-//         res.json({message: err});
-//     }
-// });
-
-// Zwraca jeden, konkretny post
-
-// router.get('/:userId', async (req, res) => {
-//     try {
-//         const user = await User.findById(req.params.userId)
-//         res.json(user)
-//     } catch (err) {
-//         res.json({ message: err });
-//     }
-// });
-
 // Usuwanie
 
 router.delete('/:userId', async (req, res) => {
@@ -269,7 +127,8 @@ router.put('/:userId', async (req, res) => {
                     sex: req.body.sex,
                     img: req.body.img,
                     isLogged: req.body.isLogged,
-                    reEnteredPassword: req.body.reEnteredPassword
+                    reEnteredPassword: req.body.reEnteredPassword,
+                    isAdmin: req.body.isAdmin
                 }
             },
         );
@@ -356,7 +215,6 @@ router.post("/resetPassword/:id/:token", async (req, res) => {
                 },
             }
         );
-        // res.json({ status: "Password Updated" });
         res.render("index", { email: verify.email, status: "verified" });
     } catch (error) {
         console.log(error);
@@ -369,30 +227,3 @@ router.post("/resetPassword/:id/:token", async (req, res) => {
 module.exports = router;
 
 
-//Login
-
-// router.post(
-//     "/login",
-//     asyncHandler(async (req,res)=>{
-//         const {email, password} = req.body;
-//         const user = await User.findOne({email});
-
-//         if (user && (await user.marchPassword(password))){
-//             res.json({
-//                 _id: user._id,
-//                 name: user.name,
-//                 lastName: user.lastName,
-//                 email: user.email,
-//                 token: null,
-//                 createdAt: user.createdAt
-//             });
-//         } else {
-//             res.status(401)
-//             throw new Error("Invalid Email or Password")
-//         }
-
-//     })
-// )
-
-
-// export default router;
